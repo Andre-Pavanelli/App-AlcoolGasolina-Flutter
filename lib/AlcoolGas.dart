@@ -6,20 +6,55 @@ class AlcoolGas extends StatefulWidget {
 }
 
 class _AlcoolGasState extends State<AlcoolGas> {
+  /*Implementações*/
+
+  /*controlers*/
+  TextEditingController _controllerAlcool = TextEditingController();
+  TextEditingController _controllerGasolina = TextEditingController();
+  String _textoResultado = "";
+
+  /*Calculos (backEnd)*/
+  void _calcular() {
+    double precoAlcool = double.tryParse(_controllerAlcool.text);
+    double precoGasolina = double.tryParse(_controllerGasolina.text);
+
+    if (precoAlcool == null || precoGasolina == null) {
+      setState(() {
+        _textoResultado =
+            "Número inválido, digite números maiores que 0 e utilizando (.) ";
+      });
+    } else {
+      /*
+      * Se o preço do álcool divido pelo preço da gasolina
+      * for >= a 0.7 é melhor abastecer com gasolina
+      * senão é melhor utilizar álcool
+      * */
+      if ((precoAlcool / precoGasolina) >= 0.7) {
+        setState(() {
+          _textoResultado = "Melhor abastecer com gasolina";
+        });
+      } else {
+        setState(() {
+          _textoResultado = "Melhor abastecer com alcool";
+        });
+      }
+      //_limparCampos();
+    }
+  }
+
+  void _limparCampos(){
+    _controllerGasolina.text = "";
+    _controllerAlcool.text = "";
+  }
+
   @override
   Widget build(BuildContext context) {
-    /*Implementações*/
-
-    /*controlers*/
-    TextEditingController _controllerAlcool = TextEditingController();
-    TextEditingController _controllerGasolina = TextEditingController();
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Álcool ou Gasolina"),
           backgroundColor: Colors.amber[300],
         ),
-        body: Container(        
+        body: Container(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(16),
             child: Column(
@@ -37,13 +72,9 @@ class _AlcoolGasState extends State<AlcoolGas> {
                     child: Text(
                       "Saiba qual a melhor opção para abastecimento do seu carro",
                       style:
-                          TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold
-                            ),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
-                      )
-                    ),
+                    )),
                 TextField(
                   keyboardType: TextInputType.number,
                   decoration:
@@ -68,13 +99,13 @@ class _AlcoolGasState extends State<AlcoolGas> {
                       "Calcular",
                       style: TextStyle(fontSize: 16),
                     ),
-                    onPressed: () {},
+                    onPressed: _calcular,
                   ),
                 ),
                 Padding(
                     padding: EdgeInsets.only(top: 6),
                     child: Text(
-                      "Resultado",
+                      _textoResultado,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
